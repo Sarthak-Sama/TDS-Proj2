@@ -26,28 +26,27 @@ function_definitions_objects_llm = {
                     "description": "The URL to make the request to"
                 }
             },
-            "required": ["query_params","url"]
+            "required": ["query_params", "url"]
         }
     },
 
-        "run_command_with_npx": {
-    "name": "run_command_with_npx",
-    "description": "Runs Prettier (version 3.4.2) on an input file and returns the SHA-256 hash of the formatted content. The function handles the file processing internally. Returns output in sha256sum format (hash followed by ' -').",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "prettier_version": {
-                "type": "string",
-                "description": "Version of Prettier to use",
-                "default": "3.4.2"
-            }
-        },
-        "required": []
-    }
-},
-    
+    "run_command_with_npx": {
+        "name": "run_command_with_npx",
+        "description": "Runs Prettier (version 3.4.2) on an input file and returns the SHA-256 hash of the formatted content. The function handles the file processing internally. Returns output in sha256sum format (hash followed by ' -').",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "prettier_version": {
+                    "type": "string",
+                    "description": "Version of Prettier to use",
+                    "default": "3.4.2"
+                }
+            },
+            "required": []
+        }
+    },
 
-   "use_google_sheets": {
+    "use_google_sheets": {
         "name": "use_google_sheets",
         "description": "Simulates Google Sheets' SEQUENCE and ARRAY_CONSTRAIN functions to calculate the sum of a constrained array. This function creates a matrix with specified dimensions starting with a specific value and incrementing by a step value, then extracts a portion of that matrix and calculates the sum.",
         "parameters": {
@@ -117,38 +116,37 @@ function_definitions_objects_llm = {
         "parameters": {
             "type": "object",
             "properties": {
-                "hiddenvalue":{
-                    "type":"string",
-                    "description":"The value in the hidden element"
+                "hiddenvalue": {
+                    "type": "string",
+                    "description": "The value in the hidden element"
                 }
-                
             },
             "required": []
         }
     },
 
-   "count_wednesdays": {
-    "name": "count_wednesdays",
-    "description": "Count the number of specific weekdays between two dates",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "start_date": {
-                "type": "string",
-                "description": "Start date in YYYY-MM-DD format"
+    "count_wednesdays": {
+        "name": "count_wednesdays",
+        "description": "Count the number of specific weekdays between two dates",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "start_date": {
+                    "type": "string",
+                    "description": "Start date in YYYY-MM-DD format"
+                },
+                "end_date": {
+                    "type": "string",
+                    "description": "End date in YYYY-MM-DD format"
+                },
+                "weekday": {
+                    "type": "integer",
+                    "description": "Day of week to count (0=Monday, 1=Tuesday, 2=Wednesday, etc.)"
+                }
             },
-            "end_date": {
-                "type": "string",
-                "description": "End date in YYYY-MM-DD format"
-            },
-            "weekday": {
-                "type": "integer",
-                "description": "Day of week to count (0=Monday, 1=Tuesday, 2=Wednesday, etc.)"
-            }
-        },
-        "required": ["start_date", "end_date"]
-    }
-},
+            "required": ["start_date", "end_date"]
+        }
+    },
 
     "extract_csv_from_a_zip": {
         "name": "extract_csv_from_a_zip",
@@ -192,7 +190,7 @@ function_definitions_objects_llm = {
         }
     },
 
-   "multi_cursor_edits_to_convert_to_json": {
+    "multi_cursor_edits_to_convert_to_json": {
         "name": "multi_cursor_edits_to_convert_to_json",
         "description": "Converts a multi-line text file containing key=value pairs into a JSON object. Each line in the file should have a single key=value pair, which gets transformed into a key-value pair in the resulting JSON object.",
         "parameters": {
@@ -218,17 +216,17 @@ function_definitions_objects_llm = {
     },
 
     "process_files_with_different_encodings": {
-    "name": "process_files_with_different_encodings",
-    "description": "Process files with different encodings and sum values associated with specific symbols",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "file_path": {
-                "type": "string",
-                "description": "Path to the zip file containing files with different encodings (data1.csv in CP-1252, data2.csv in UTF-8, data3.txt in UTF-16)"
-            }
-        },
-        "required": []
+        "name": "process_files_with_different_encodings",
+        "description": "Process files with different encodings and sum values associated with specific symbols",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to the zip file containing files with different encodings (data1.csv in CP-1252, data2.csv in UTF-8, data3.txt in UTF-16)"
+                }
+            },
+            "required": []
         }
     },
 
@@ -238,73 +236,73 @@ function_definitions_objects_llm = {
         "parameters": {
             "type": "object",
             "properties": {
-                "new_email":{
-                "type": "string",
-                "description":"the parameter or the email that is given in the question"
-             }
+                "new_email": {
+                    "type": "string",
+                    "description": "the parameter or the email that is given in the question"
+                }
             },
             "required": []
         }
     },
 
     "replace_across_files": {
-    "name": "replace_across_files",
-    "description": "Download and extract a zip file, replace 'IITM' (case-insensitive) with 'IIT Madras' in all files, and calculate a hash of the result",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "file_path": {
-                "type": "string",
-                "description": "Path to the zip file containing the files to process"
-            }
-        },
-        "required": ["file_path"]
-    }
+        "name": "replace_across_files",
+        "description": "Download and extract a zip file, replace 'IITM' (case-insensitive) with 'IIT Madras' in all files, and calculate a hash of the result",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to the zip file containing the files to process"
+                }
+            },
+            "required": ["file_path"]
+        }
     },
 
     "list_files_and_attributes": {
-    "name": "list_files_and_attributes",
-    "description": "Download and extract a zip file, then list all files with their dates and sizes, calculating the total size of files meeting specific criteria",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "file_path": {
-                "type": "string",
-                "description": "Path to the zip file containing the files to process"
+        "name": "list_files_and_attributes",
+        "description": "Download and extract a zip file, then list all files with their dates and sizes, calculating the total size of files meeting specific criteria",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to the zip file containing the files to process"
+                },
+                "min_size": {
+                    "type": "integer",
+                    "description": "Minimum file size in bytes (default: 6262)"
+                },
+                "reference_date": {
+                    "type": "string",
+                    "description": "Reference date in format 'YYYY-MM-DD HH:MM:SS' (default: '2019-03-22 14:31:00')"
+                },
+                "timezone": {
+                    "type": "string",
+                    "description": "Timezone for reference date (default: 'Asia/Kolkata')"
+                },
+                "debug": {
+                    "type": "boolean",
+                    "description": "Whether to print debug information (default: False)"
+                }
             },
-            "min_size": {
-                "type": "integer",
-                "description": "Minimum file size in bytes (default: 6262)"
-            },
-            "reference_date": {
-                "type": "string",
-                "description": "Reference date in format 'YYYY-MM-DD HH:MM:SS' (default: '2019-03-22 14:31:00')"
-            },
-            "timezone": {
-                "type": "string",
-                "description": "Timezone for reference date (default: 'Asia/Kolkata')"
-            },
-            "debug": {
-                "type": "boolean",
-                "description": "Whether to print debug information (default: False)"
-            }
-        },
-        "required": ["file_path"]
-    }
-},
+            "required": ["file_path"]
+        }
+    },
 
     "compare_files": {
-    "name": "compare_files",
-    "description": "Compare two files and analyze differences",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "file_path": {
-                "type": "string",
-                "description": "Path to the zip file containing files to compare"
-            }
-        },
-        "required": ["file_path"]
+        "name": "compare_files",
+        "description": "Compare two files and analyze differences",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to the zip file containing files to compare"
+                }
+            },
+            "required": ["file_path"]
         }
     },
 
@@ -327,7 +325,7 @@ function_definitions_objects_llm = {
             "required": []
         }
     },
-# Completed
+
     "compress_an_image": {
         "name": "compress_an_image",
         "description": "Compress an image to be under 1,500 bytes and return it as base64",
@@ -342,22 +340,22 @@ function_definitions_objects_llm = {
             "required": ["image_path"]
         }
     },
-# Completed
-"host_your_portfolio_on_github_pages": {
+
+    "host_your_portfolio_on_github_pages": {
         "name": "host_your_portfolio_on_github_pages",
         "description": "deos something in github for which the email or the parameter in given in the question is required that needs to be included in the pages site portfolio",
         "parameters": {
             "type": "object",
             "properties": {
-                "new_email":{
-                "type": "string",
-                "description":"the parameter or the email that is given in the question"
-             }
+                "new_email": {
+                    "type": "string",
+                    "description": "the parameter or the email that is given in the question"
+                }
             },
             "required": []
         }
     },
-# Completed
+
     "use_google_colab": {
         "name": "use_google_colab",
         "description": "Extract the email to get the result of running hashlib code in Google Colab",
@@ -372,7 +370,7 @@ function_definitions_objects_llm = {
             "required": ["email"]
         }
     },
-# Completed
+
     "use_an_image_library_in_google_colab": {
         "name": "use_an_image_library_in_google_colab",
         "description": "Processes an image to count pixels with brightness above a threshold (0.683). This function opens the image, converts it to RGB format if needed, calculates lightness values using the HLS color model, and counts pixels exceeding the threshold.",
@@ -404,7 +402,6 @@ function_definitions_objects_llm = {
         "parameters": {
             "type": "object",
             "properties": {
-            
                 "new_email": {
                     "type": "string",
                     "description": "The email address to configure in the GitHub workflow. It is not necessarily a email but can be any string or parameter. It will be a parameter after text 'Include a step with your' and end with 'in its name' "
@@ -414,7 +411,7 @@ function_definitions_objects_llm = {
                     "description": "The cron syntax for scheduling the workflow (e.g., '30 2 * * *')."
                 }
             },
-            "required": [ "email"]
+            "required": ["new_email"]
         }
     },
 
@@ -424,38 +421,39 @@ function_definitions_objects_llm = {
         "parameters": {
             "type": "object",
             "properties": {
-                "new_tag":{
-                    "type":"string",
-                    "description":"the tag required for the docker image"
+                "new_tag": {
+                    "type": "string",
+                    "description": "the tag required for the docker image"
+                }
             },
             "required": []
         }
     },
 
     "write_a_fastapi_server_to_serve_data": {
-    "name": "write_a_fastapi_server_to_serve_data",
-    "description": "Creates and runs a FastAPI application that serves student data from a CSV file with filtering capabilities by class",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "csv_path": {
-                "type": "string",
-                "description": "Path to the CSV file containing student data. The CSV must have a 'class' column among other student data."
+        "name": "write_a_fastapi_server_to_serve_data",
+        "description": "Creates and runs a FastAPI application that serves student data from a CSV file with filtering capabilities by class",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "csv_path": {
+                    "type": "string",
+                    "description": "Path to the CSV file containing student data. The CSV must have a 'class' column among other student data."
+                },
+                "host": {
+                    "type": "string",
+                    "description": "The host address to run the API on (e.g., '127.0.0.1', '0.0.0.0')",
+                    "default": "127.0.0.1"
+                },
+                "port": {
+                    "type": "integer",
+                    "description": "The port number to run the API on (e.g., 8000, 8080)",
+                    "default": 8000
+                }
             },
-            "host": {
-                "type": "string",
-                "description": "The host address to run the API on (e.g., '127.0.0.1', '0.0.0.0')",
-                "default": "127.0.0.1"
-            },
-            "port": {
-                "type": "integer",
-                "description": "The port number to run the API on (e.g., 8000, 8080)",
-                "default": 8000
-            }
-        },
-        "required": ["csv_path"]
-    }
-},
+            "required": ["csv_path"]
+        }
+    },
 
     "run_a_local_llm_with_llamafile": {
         "name": "run_a_local_llm_with_llamafile",
@@ -473,19 +471,19 @@ function_definitions_objects_llm = {
     },
 
     "llm_sentiment_analysis": {
-    "name": "llm_sentiment_analysis",
-    "description": "Analyzes the sentiment of provided text using OpenAI's API, categorizing it as GOOD, BAD, or NEUTRAL. This function makes a request to the OpenAI API with the specified text and returns the sentiment analysis result.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "text": {
-                "type": "string", 
-                "description": "The text content to analyze for sentiment. If empty, will return an analysis of empty text."
-            }
-        },
-        "required": ["text"]
-    }
-},
+        "name": "llm_sentiment_analysis",
+        "description": "Analyzes the sentiment of provided text using OpenAI's API, categorizing it as GOOD, BAD, or NEUTRAL. This function makes a request to the OpenAI API with the specified text and returns the sentiment analysis result.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "description": "The text content to analyze for sentiment. If empty, will return an analysis of empty text."
+                }
+            },
+            "required": ["text"]
+        }
+    },
 
     "llm_token_cost": {
         "name": "llm_token_cost",
@@ -502,39 +500,38 @@ function_definitions_objects_llm = {
         }
     },
 
-"generate_addresses_with_llms": {
-    "name": "generate_addresses_with_llms",
-    "description": "Creates a JSON request body for OpenAI API to generate structured address data. This function prepares a properly formatted request that will instruct the language model to generate realistic addresses for logistics and delivery route planning.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "model": {
-                "type": "string",
-                "description": "The OpenAI model to use for generating addresses. Default is 'gpt-4o-mini'.",
-                "default": "gpt-4o-mini"
+    "generate_addresses_with_llms": {
+        "name": "generate_addresses_with_llms",
+        "description": "Creates a JSON request body for OpenAI API to generate structured address data. This function prepares a properly formatted request that will instruct the language model to generate realistic addresses for logistics and delivery route planning.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "model": {
+                    "type": "string",
+                    "description": "The OpenAI model to use for generating addresses. Default is 'gpt-4o-mini'.",
+                    "default": "gpt-4o-mini"
+                },
+                "count": {
+                    "type": "integer",
+                    "description": "Number of addresses to generate. Default is 10.",
+                    "default": 10
+                },
+                "system_message": {
+                    "type": "string",
+                    "description": "System prompt instruction for the model. Default is 'Respond in JSON'.",
+                    "default": "Respond in JSON"
+                },
+                "country": {
+                    "type": "string",
+                    "description": "Country to generate addresses for. Default is 'US'.",
+                    "default": "US"
+                }
             },
-            "count": {
-                "type": "integer",
-                "description": "Number of addresses to generate. Default is 10.",
-                "default": 10
-            },
-            "system_message": {
-                "type": "string",
-                "description": "System prompt instruction for the model. Default is 'Respond in JSON'.",
-                "default": "Respond in JSON"
-            },
-            "country": {
-                "type": "string",
-                "description": "Country to generate addresses for. Default is 'US'.",
-                "default": "US"
-            }
-        },
-        "required": []
-    }
-},
+            "required": []
+        }
+    },
 
-    # Completed
-        "llm_vision": {
+    "llm_vision": {
         "name": "llm_vision",
         "description": "Generate a JSON body for an OpenAI vision API request to analyze images. This function formats the request with a text prompt and an image URL, creating the proper structure required by OpenAI's API for combined text-and-image inputs.",
         "parameters": {
@@ -557,53 +554,51 @@ function_definitions_objects_llm = {
         }
     },
 
-    # Completed
-        "llm_embeddings" : {
-    "name": "llm_embeddings",
-    "description": "Generate a JSON body for an OpenAI embeddings API request using the text-embedding-3-small model.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "model": {"type": "string", "enum": ["text-embedding-3-small"], "description": "The OpenAI model to use for generating text embeddings."},
-            "input_texts": {
-                "type": "array",
-                "items": {"type": "string"},
-                "description": "List of text strings to generate embeddings for."
-            }
-        },
-        "required": ["model", "input_texts"]
+    "llm_embeddings": {
+        "name": "llm_embeddings",
+        "description": "Generate a JSON body for an OpenAI embeddings API request using the text-embedding-3-small model.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "model": {"type": "string", "enum": ["text-embedding-3-small"], "description": "The OpenAI model to use for generating text embeddings."},
+                "input_texts": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "List of text strings to generate embeddings for."
+                }
+            },
+            "required": ["model", "input_texts"]
         }
     },
 
-    # Completed
     "embedding_similarity": {
         "name": "embedding_similarity",
         "description": "Calculate cosine similarity between embeddings and return the most similar pair.",
         "parameters": {
             "type": "object",
-            "properties": {}
+            "properties": {},
+            "required": []
+        }
+    },
+
+    "vector_databases": {
+        "name": "vector_databases",
+        "description": "Creates and runs a FastAPI application that provides a semantic search API using vector embeddings. This function sets up an endpoint that accepts document texts and a query, calculates similarity using text embeddings, and returns the most similar documents.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "description": "The host address to run the API on (default: '127.0.0.1')"
+                },
+                "port": {
+                    "type": "integer",
+                    "description": "The port number to run the API on (default: 8000)"
+                }
             },
             "required": []
-        },
-
-        "vector_databases": {
-            "name": "vector_databases",
-            "description": "Creates and runs a FastAPI application that provides a semantic search API using vector embeddings. This function sets up an endpoint that accepts document texts and a query, calculates similarity using text embeddings, and returns the most similar documents.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "host": {
-                        "type": "string",
-                        "description": "The host address to run the API on (default: '127.0.0.1')"
-                    },
-                    "port": {
-                        "type": "integer",
-                        "description": "The port number to run the API on (default: 8000)"
-                    }
-                },
-                "required": []
-            }
-        },
+        }
+    },
 
     "function_calling": {
         "name": "function_calling",
@@ -645,9 +640,9 @@ function_definitions_objects_llm = {
                     "description": "The page number of the ESPN Cricinfo ODI batting stats to scrape (e.g., 23). Must be a positive integer."
                 }
             },
-            "required": ["page_number"],
-            },
-        },
+            "required": ["page_number"]
+        }
+    },
 
     "scrape_imdb_movies": {
         "name": "scrape_imdb_movies",
@@ -686,7 +681,8 @@ function_definitions_objects_llm = {
                     "type": "boolean",
                     "description": "Whether to enable CORS for all origins (default: True)"
                 }
-            }
+            },
+            "required": []
         }
     },
 
@@ -707,80 +703,78 @@ function_definitions_objects_llm = {
     },
 
     "find_the_bounding_box_of_a_city": {
-    "name": "find_the_bounding_box_of_a_city",
-    "description": "Retrieves the minimum or maximum latitude of the bounding box for a specified city using geocoding",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "city_name": {
-                "type": "string",
-                "description": "The name of the city to geocode (e.g., 'Mexico City', 'New York', 'Tokyo')"
+        "name": "find_the_bounding_box_of_a_city",
+        "description": "Retrieves the minimum or maximum latitude of the bounding box for a specified city using geocoding",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "city_name": {
+                    "type": "string",
+                    "description": "The name of the city to geocode (e.g., 'Mexico City', 'New York', 'Tokyo')"
+                },
+                "bound_type": {
+                    "type": "string",
+                    "description": "Type of boundary to return - 'minimum' or 'maximum'",
+                    "enum": ["minimum", "maximum"]
+                },
+                "osm_id_ending": {
+                    "type": "string",
+                    "description": "The ending pattern of the osm_id to match (e.g., \"2077\")"
+                }
             },
-            "bound_type": {
-                "type": "string",
-                "description": "Type of boundary to return - 'minimum' or 'maximum'",
-                "enum": ["minimum", "maximum"]
-            },
-            "osm_id_ending":{
-                "type": "string",
-                "description": "The ending pattern of the osm_id to match (e.g., "2077")"
-            }
-        },
-        "required": ["city_name", "bound_type"]
-    }
-},
+            "required": ["city_name", "bound_type"]
+        }
+    },
 
     "search_hacker_news": {
-    "name": "search_hacker_news",
-    "description": "Searches Hacker News via the HNRSS API for the latest post mentioning a specified technology topic with a minimum number of points, returning the post's link as a JSON object.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "query": {
-                "type": "string",
-                "description": "The technology topic to search for in Hacker News posts (e.g., 'python', 'blockchain')."
+        "name": "search_hacker_news",
+        "description": "Searches Hacker News via the HNRSS API for the latest post mentioning a specified technology topic with a minimum number of points, returning the post's link as a JSON object.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The technology topic to search for in Hacker News posts (e.g., 'python', 'blockchain')."
+                },
+                "points": {
+                    "type": "integer",
+                    "description": "The minimum number of points the post must have to be considered relevant."
+                }
             },
-            "points": {
-                "type": "integer",
-                "description": "The minimum number of points the post must have to be considered relevant."
-            }
-        },
-        "required": ["query", "points"]
-    }
-},
+            "required": ["query", "points"]
+        }
+    },
 
     "find_newest_github_user": {
-    "name": "find_newest_github_user",
-    "description": "Searches GitHub for the newest user in a specified location with a follower count based on a comparison operator, excluding users who joined after March 23, 2025, 3:57:03 PM PDT. Returns the creation date in ISO 8601 format.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "location": {
-                "type": "string",
-                "description": "The city to search for GitHub users (e.g., 'Delhi')."
+        "name": "find_newest_github_user",
+        "description": "Searches GitHub for the newest user in a specified location with a follower count based on a comparison operator, excluding users who joined after March 23, 2025, 3:57:03 PM PDT. Returns the creation date in ISO 8601 format.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "The city to search for GitHub users (e.g., 'Delhi')."
+                },
+                "followers": {
+                    "type": "integer",
+                    "description": "The number of followers to filter by."
+                },
+                "operator": {
+                    "type": "string",
+                    "enum": ["gt", "lt", "eq"],
+                    "description": "The comparison operator for followers: 'gt' for greater than, 'lt' for less than, 'eq' for equal to."
+                }
             },
-            "followers": {
-                "type": "integer",
-                "description": "The number of followers to filter by."
-            },
-            "operator": {
-                "type": "string",
-                "enum": ["gt", "lt", "eq"],
-                "description": "The comparison operator for followers: 'gt' for greater than, 'lt' for less than, 'eq' for equal to."
-            }
-        },
-        "required": ["location", "followers", "operator"]
-    }
-},
+            "required": ["location", "followers", "operator"]
+        }
+    },
 
-    
     "create_a_scheduled_github_action": {
         "name": "create_a_scheduled_github_action",
         "description": "Create a scheduled GitHub action that runs daily and adds a commit to your repository.",
         "parameters": {
             "type": "object",
             "properties": {
-            
                 "email": {
                     "type": "string",
                     "description": "The email address to configure in the GitHub workflow. It is not necessarily a email but can be any string or parameter. It will be a parameter after text 'Include a step with your' and end with 'in its name' "
@@ -790,44 +784,44 @@ function_definitions_objects_llm = {
                     "description": "The cron syntax for scheduling the workflow (e.g., '30 2 * * *')."
                 }
             },
-            "required": [ "email"]
+            "required": ["email"]
         }
     },
 
-        "extract_tables_from_pdf": {
-            "name": "extract_tables_from_pdf",
-            "description": "Calculate total marks for one subject for students meeting score criteria in another subject within specified groups from a PDF file containing student marks.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "pdf_path": {
-                        "type": "string",
-                        "description": "Path to the PDF file containing student marks data organized by groups"
-                    },
-                    "filter_subject": {
-                        "type": "string",
-                        "description": "Subject name to filter by (e.g., 'English', 'Economics')"
-                    },
-                    "min_score": {
-                        "type": "integer",
-                        "description": "Minimum score threshold for the filter subject"
-                    },
-                    "sum_subject": {
-                        "type": "string",
-                        "description": "Subject name to sum marks for (e.g., 'Maths', 'Biology')"
-                    },
-                    "start_group": {
-                        "type": "integer",
-                        "description": "Starting group number (inclusive) to include in the calculation"
-                    },
-                    "end_group": {
-                        "type": "integer",
-                        "description": "Ending group number (inclusive) to include in the calculation"
-                    }
+    "extract_tables_from_pdf": {
+        "name": "extract_tables_from_pdf",
+        "description": "Calculate total marks for one subject for students meeting score criteria in another subject within specified groups from a PDF file containing student marks.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "pdf_path": {
+                    "type": "string",
+                    "description": "Path to the PDF file containing student marks data organized by groups"
                 },
-                "required": ["pdf_path", "filter_subject", "min_score", "sum_subject", "start_group", "end_group"]
-            }
-        },
+                "filter_subject": {
+                    "type": "string",
+                    "description": "Subject name to filter by (e.g., 'English', 'Economics')"
+                },
+                "min_score": {
+                    "type": "integer",
+                    "description": "Minimum score threshold for the filter subject"
+                },
+                "sum_subject": {
+                    "type": "string",
+                    "description": "Subject name to sum marks for (e.g., 'Maths', 'Biology')"
+                },
+                "start_group": {
+                    "type": "integer",
+                    "description": "Starting group number (inclusive) to include in the calculation"
+                },
+                "end_group": {
+                    "type": "integer",
+                    "description": "Ending group number (inclusive) to include in the calculation"
+                }
+            },
+            "required": ["pdf_path", "filter_subject", "min_score", "sum_subject", "start_group", "end_group"]
+        }
+    },
 
     "convert_a_pdf_to_markdown": {
         "name": "convert_a_pdf_to_markdown",
@@ -890,61 +884,59 @@ function_definitions_objects_llm = {
     },
 
     "apache_log_requests": {
-    "name": "apache_log_requests",
-    "description": "Extracts and analyzes Apache log requests for specific conditions, such as peak usage periods, request types, and success criteria.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "file_path": {
-                "type": "string",
-                "description": "The file path of the GZipped Apache log file."
+        "name": "apache_log_requests",
+        "description": "Extracts and analyzes Apache log requests for specific conditions, such as peak usage periods, request types, and success criteria.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "The file path of the GZipped Apache log file."
+                },
+                "topic_heading": {
+                    "type": "string",
+                    "description": "A short heading summarizing the analysis topic."
+                },
+                "start_time": {
+                    "type": "string",
+                    "description": "The start time of the time window for analysis, in HH format (24-hour)."
+                },
+                "end_time": {
+                    "type": "string",
+                    "description": "The end time (exclusive) of the time window for analysis, in HH format (24-hour)."
+                },
+                "day": {
+                    "type": "string",
+                    "description": "The specific day for analysis (e.g., 'Sunday')."
+                }
             },
-            "topic_heading": {
-                "type": "string",
-                "description": "A short heading summarizing the analysis topic."
-            },
-            "start_time": {
-                "type": "string",
-                "description": "The start time of the time window for analysis, in HH format (24-hour)."
-            },
-            "end_time": {
-                "type": "string",
-                "description": "The end time (exclusive) of the time window for analysis, in HH format (24-hour)."
-            },
-            "day": {
-                "type": "string",
-                "description": "The specific day for analysis (e.g., 'Sunday')."
-            }
-        },
-        "required": ["file_path", "topic_heading", "start_time", "end_time", "day"]
-    }
-}
-,
+            "required": ["file_path", "topic_heading", "start_time", "end_time", "day"]
+        }
+    },
 
-"apache_log_downloads": {
-    "name": "apache_log_downloads",
-    "description": "Analyzes an Apache log file to track bandwidth usage for a specific station and date. The function filters log entries based on a given date and extracts only those requests related to a specific station. It then aggregates data by IP address, calculating the total bytes downloaded per IP. Finally, it identifies the top data-consuming IP and reports the total bytes downloaded by that IP.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "file_path": {
-                "type": "string",
-                "description": "The full file path of the Apache log file (GZipped format)."
+    "apache_log_downloads": {
+        "name": "apache_log_downloads",
+        "description": "Analyzes an Apache log file to track bandwidth usage for a specific station and date. The function filters log entries based on a given date and extracts only those requests related to a specific station. It then aggregates data by IP address, calculating the total bytes downloaded per IP. Finally, it identifies the top data-consuming IP and reports the total bytes downloaded by that IP.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "The full file path of the Apache log file (GZipped format)."
+                },
+                "station_name": {
+                    "type": "string",
+                    "description": "The name of the station or content category being analyzed (e.g., 'tamilmp3')."
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "The specific date (YYYY-MM-DD) for which log entries should be filtered."
+                }
             },
-            "station_name": {
-                "type": "string",
-                "description": "The name of the station or content category being analyzed (e.g., 'tamilmp3')."
-            },
-            "date": {
-                "type": "string",
-                "format": "date",
-                "description": "The specific date (YYYY-MM-DD) for which log entries should be filtered."
-            }
-        },
-        "required": ["file_path", "station_name", "date"]
-    }
-}
-,
+            "required": ["file_path", "station_name", "date"]
+        }
+    },
 
     "clean_up_sales_data": {
         "name": "clean_up_sales_data",
@@ -952,7 +944,7 @@ function_definitions_objects_llm = {
         "parameters": {
             "type": "object",
             "properties": {
-                  "file_path": {
+                "file_path": {
                     "type": "string",
                     "description": "The JSON file containing product data."
                 },
@@ -968,36 +960,35 @@ function_definitions_objects_llm = {
                     "type": "number",
                     "description": "The minimum units of the product per transaction for which we want to find the number of units sold in a given city."
                 }
-              
             },
-            "required": [ "file_path","product", "city", "min_units"]
+            "required": ["file_path", "product", "city", "min_units"]
         }
     },
 
-        "parse_partial_json": {
+    "parse_partial_json": {
         "name": "parse_partial_json",
         "description": "Aggregates the numeric values of a specified key from a JSONL file and returns the total sum. This function is intended for processing digitized OCR data from sales receipts, where some entries may be truncated. It extracts the numeric value from each row based on the provided key and a regular expression pattern, validates the data, and computes the aggregate sum.",
         "parameters": {
-        "type": "object",
-        "properties": {
-            "file_path": {
-            "type": "string",
-            "description": "The path to the JSONL file containing the digitized sales data."
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "The path to the JSONL file containing the digitized sales data."
+                },
+                "key": {
+                    "type": "string",
+                    "description": "The JSON key whose numeric values will be summed (e.g., 'sales')."
+                },
+                "num_rows": {
+                    "type": "integer",
+                    "description": "The total number of rows in the JSONL file for data validation purposes."
+                },
+                "regex_pattern": {
+                    "type": "string",
+                    "description": "A custom regular expression pattern to extract the numeric value from each JSON line."
+                }
             },
-            "key": {
-            "type": "string",
-            "description": "The JSON key whose numeric values will be summed (e.g., 'sales').",
-            },
-            "num_rows": {
-            "type": "integer",
-            "description": "The total number of rows in the JSONL file for data validation purposes.",
-            },
-            "regex_pattern": {
-            "type": "string",
-            "description": "A custom regular expression pattern to extract the numeric value from each JSON line."
-            }
-        },
-        "required": ["file_path","key", "num_rows", "regex_pattern"]
+            "required": ["file_path", "key", "num_rows", "regex_pattern"]
         }
     },
 
@@ -1068,12 +1059,10 @@ function_definitions_objects_llm = {
             "properties": {
                 "scrambled_image_path": {
                     "type": "string",
-                    "description": "Path to the scrambled jigsaw image file (supported formats: PNG, JPEG, WebP)",
+                    "description": "Path to the scrambled jigsaw image file (supported formats: PNG, JPEG, WebP)"
                 }
             },
             "required": ["scrambled_image_path"]
         }
     }
 }
-}
-
