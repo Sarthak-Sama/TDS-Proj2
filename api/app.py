@@ -48,6 +48,45 @@ def convert_answer_to_string(answer: Union[str, Dict, list, Any]) -> str:
     else:
         return str(answer)
 
+
+from fastapi import FastAPI, File, Form, UploadFile, HTTPException
+from fastapi.responses import JSONResponse
+import os
+import json
+import inspect
+from typing import Optional, Dict, Any, Union
+import shutil
+from utils.question_matching import find_similar_question
+from utils.file_process import process_uploaded_file
+from utils.function_definations_llm import function_definitions_objects_llm
+from utils.openai_api import extract_parameters
+from utils.solution_functions import functions_dict
+
+
+def filter_arguments_for_function(func, arguments: Dict) -> Dict:
+    """Filter arguments to only include what the function accepts"""
+    if not callable(func):
+        return {}
+    
+    # Get the function's signature
+    sig = inspect.signature(func)
+    parameters = sig.parameters
+    
+    # Filter arguments to only include what the function accepts
+    filtered_args = {
+        k: v for k, v in arguments.items() 
+        if k in parameters
+    }
+    
+    # Add default values for missing but required parameters
+    for param_name, param in parameters.items():
+        if (param.default is inspect.Parameter.empty and 
+            param_name not in filtered_args and
+            param.kind != param.VAR_KEYWORD):
+            filtered_args[param_name] = None  # Or appropriate default
+            
+    return filtered_args
+
 @app.post("/")
 async def process_file(
     question: str = Form(...),
@@ -55,6 +94,7 @@ async def process_file(
 ):
     file_names = []
     tmp_dir_local = tmp_dir
+    file_data = {}
 
     # Handle the file processing if file is present
     matched_function = find_similar_question(question)
@@ -65,9 +105,15 @@ async def process_file(
         file_path = await save_upload_file(file)
         try:
             tmp_dir_local, file_names = process_uploaded_file(file_path)
+            file_data = {
+                "file_path": os.path.join(tmp_dir_local, file_names[0]) if file_names else None,
+                "original_filename": file.filename,
+                "tmp_dir": tmp_dir_local
+            }
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
 
+    # Extract parameters using LLM
     parameters = extract_parameters(
         str(question),
         function_definitions_llm=function_definitions_objects_llm.get(function_name, {}),
@@ -81,7 +127,8 @@ async def process_file(
         )
 
     solution_function = functions_dict.get(
-        function_name, lambda **kwargs: json.dumps({"error": "No matching function found"})
+        function_name, 
+        lambda **kwargs: json.dumps({"error": "No matching function found"})
     )
 
     try:
@@ -92,24 +139,34 @@ async def process_file(
             detail=f"Invalid arguments format: {str(e)}"
         )
 
-    print("-----------arguments------------\n", arguments)
-
-    if matched_function == "compress_an_image" and file_names and tmp_dir_local:
-        actual_image_path = os.path.join(tmp_dir_local, file_names[0])
-        arguments["image_path"] = actual_image_path
-        print(f"Overriding image path to: {actual_image_path}")
+    # Combine all possible arguments
+    combined_args = {**arguments, **file_data}
+    
+    # Filter arguments to only what the function accepts
+    filtered_args = filter_arguments_for_function(solution_function, combined_args)
+    print("-----------filtered_args------------\n", filtered_args)
 
     try:
-        answer = solution_function(**arguments)
-        # Convert answer to proper string format
+        # Execute with only the needed arguments
+        answer = solution_function(**filtered_args)
         answer_str = convert_answer_to_string(answer)
     except Exception as e:
         error_msg = f"Error executing function: {str(e)}"
         answer_str = json.dumps({"error": error_msg})
         raise HTTPException(status_code=500, detail=error_msg)
+    finally:
+        # Clean up temporary files
+        if file_data.get("tmp_dir") and os.path.exists(file_data["tmp_dir"]):
+            try:
+                shutil.rmtree(file_data["tmp_dir"])
+            except OSError as e:
+                print(f"Warning: Failed to clean up temp directory: {e}")
 
     return {"answer": answer_str}
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("api.app:app", host="0.0.0.0", port=8000, reload=True)
+
+
+
