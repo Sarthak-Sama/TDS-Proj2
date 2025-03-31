@@ -31,14 +31,21 @@ function_definitions_objects_llm = {
     },
 
         "run_command_with_npx": {
-        "name": "run_command_with_npx",
-        "description": "Runs Prettier (version 3.4.2) on the specified file and calculates its SHA-256 hash. This function ensures the file is formatted using Prettier and returns the hash of the formatted content.",
-        "parameters": {
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
-    },
+    "name": "run_command_with_npx",
+    "description": "Runs Prettier (version 3.4.2) on an input file and returns the SHA-256 hash of the formatted content. The function handles the file processing internally. Returns output in sha256sum format (hash followed by ' -').",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "prettier_version": {
+                "type": "string",
+                "description": "Version of Prettier to use",
+                "default": "3.4.2"
+            }
+        },
+        "required": []
+    }
+},
+    
 
    "use_google_sheets": {
         "name": "use_google_sheets",
