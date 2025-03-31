@@ -80,17 +80,27 @@ def vs_code_version():
     |      Conf files:
     """
 
+import requests
+import json
+
 def make_http_requests_with_uv(url="https://httpbin.org/get", query_params=None):
-    # For this specific assignment, we need to use exactly these parameters
-    
+    """Make HTTP requests and return response as JSON string"""
     try:
         # Set the User-Agent to match the expected output
         headers = {"User-Agent": "HTTPie/3.2.3"}
         response = requests.get(url, params=query_params, headers=headers)
-        return response.json()
+        
+        # Convert the response JSON to a properly formatted string
+        response_json = response.json()
+        return json.dumps(response_json, indent=2)  # Convert dict to formatted JSON string
+        
     except requests.RequestException as e:
         print(f"HTTP request failed: {e}")
-        return None
+        return json.dumps({"error": str(e)})  # Return error as JSON string
+    
+    except json.JSONDecodeError as e:
+        print(f"Failed to decode response: {e}")
+        return json.dumps({"error": "Invalid JSON response"})  # Return error as JSON string
         
 def run_command_with_npx():
     return "36d3b7f84456ac4ebd9c3bdc16d498b7c1cb90f4c9c1fa51f8367f78d94c2251  -"
