@@ -137,6 +137,19 @@ def run_command_with_npx(
         npx_path = "npx"  # Let system PATH handle resolution
 
     try:
+        install_cmd = [
+            npx,
+            "-y",
+            f"prettier@{prettier_version}",
+            "--version"  # Just to trigger installation
+        ]
+        subprocess.run(
+            install_cmd,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        
         # Run Prettier
         result = subprocess.run(
             [npx_path, "-y", f"prettier@{prettier_version}", file_path],
