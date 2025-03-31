@@ -166,33 +166,13 @@ def run_command_with_npx(
         # Compute hash
         sha256_hash = hashlib.sha256(formatted_text.encode('utf-8')).hexdigest()
         
-        return formatted_text, sha256_hash
+        return sha256_hash
 
     except subprocess.CalledProcessError as e:
         error_msg = f"Prettier failed (v{prettier_version}): {e.stderr.strip() or 'Unknown error'}"
         raise subprocess.SubprocessError(error_msg) from e
 
 
-def generate_sha256sum_output(file_path: str, **kwargs) -> str:
-    """
-    Generate sha256sum-like output for a formatted file.
-    
-    Args:
-        file_path: Path to input file
-        **kwargs: Passed to format_and_hash_file()
-    
-    Returns:
-        str: "hash  -" format string
-    
-    Example:
-        >>> generate_sha256sum_output("README.md")
-        "a1b2c3...  -"
-    """
-    try:
-        _, sha256_hash = format_and_hash_file(file_path, **kwargs)
-        return f"{sha256_hash}"
-    except Exception as e:
-        return f"Error: {str(e)}"
 
 
 
