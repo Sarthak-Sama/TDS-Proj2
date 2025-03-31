@@ -1292,6 +1292,7 @@ def write_a_fastapi_server_to_serve_data(file_path, host: str = "127.0.0.1", por
         str: The URL where the API is deployed.
     """
     # Function to check if a port is already in use
+    csv_path=file_path
     def is_port_in_use(port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             return s.connect_ex(('localhost', port)) == 0
