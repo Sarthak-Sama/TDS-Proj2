@@ -720,7 +720,7 @@ function_definitions_objects_llm = {
                 "type": "string",
                 "description": "Type of boundary to return - 'minimum' or 'maximum'",
                 "enum": ["minimum", "maximum"]
-            }
+            },
             "osm_id_ending":{
                 "type": "string",
                 "description": "The ending pattern of the osm_id to match (e.g., "2077")"
@@ -1075,4 +1075,4 @@ function_definitions_objects_llm = {
         }
     }
 }
-}
+
