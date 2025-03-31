@@ -2169,21 +2169,20 @@ def create_a_scheduled_github_action(
     repo_owner="veershah1231",           
     repo_name="tdsGA4",               
     token={os.getenv("GITHUB_ACTION_TOKEN")},  # Set default to required token
-    email="23f3000709@ds.study.iitm.ac.in",  # Set default to required email
-    cron="30 2 * * *",                   
+    email="23f1001524@ds.study.iitm.ac.in",  # Set default to required email
+    cron="0 12 * * *",                   
     workflow_name="daily-commit.yml"     
 ):
     # GitHub API base URL
     api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}"
 
     # Workflow YAML content with parameterized values and fixed syntax
-    workflow_content = f"""name: Daily Commit for {email}
+    workflow_content = f"""name: Daily Commit
 
 on:
-  push:
   schedule:
     - cron: '{cron}'  # Runs daily at specified time
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual triggering
 
 permissions:
   contents: write  # Ensure GitHub Actions can push changes
@@ -2195,21 +2194,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Configure Git for {email}
+      - name: Configure Git ({email})
         run: |
-          git config --global user.name "{email}"
+          git config --global user.name "GitHub Action"
           git config --global user.email "{email}"
 
-      - name: Make a Change for {email}
+      - name: Make a Change
         run: |
-          echo "Last run: $(date) by {email}" > last_run.txt  # Include email in the file
+          echo "Last run: $(date)" > last_run.txt  # Always modify the file
 
-      - name: Commit and Push Changes for {email}
+      - name: Commit and Push Changes
         run: |
           git add last_run.txt
-          git commit -m "Automated daily commit at $(date) by {email}" || echo "No changes to commit"
+          git commit -m "Automated daily commit at $(date)" || echo "No changes to commit"
           git push
 """
+
 
     import base64
     # Encode the content to base64 as required by GitHub API
