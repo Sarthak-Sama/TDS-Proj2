@@ -1,1 +1,1 @@
-web: $HOME/.local/bin/python -m uvicorn api.app:app --host 0.0.0.0 --port $PORT
+web: python -m uvicorn api.app:app --host 0.0.0.0 --port $PORT
