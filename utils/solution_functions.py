@@ -158,7 +158,7 @@ def run_command_with_npx(
             check=True
         )
 
-        formatted_text = result.stdout.strip()
+        formatted_text = result.stdout
         
         if not formatted_text:
             raise ValueError("Prettier returned empty output")
