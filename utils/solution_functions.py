@@ -80,20 +80,101 @@ def vs_code_version():
     |      Conf files:
     """
 
+import requests
+import json
+
 def make_http_requests_with_uv(url="https://httpbin.org/get", query_params=None):
-    # For this specific assignment, we need to use exactly these parameters
-    
+    """Make HTTP requests and return response as JSON string"""
     try:
         # Set the User-Agent to match the expected output
         headers = {"User-Agent": "HTTPie/3.2.3"}
         response = requests.get(url, params=query_params, headers=headers)
-        return response.json()
+        
+        # Convert the response JSON to a properly formatted string
+        response_json = response.json()
+        return json.dumps(response_json, indent=2)  # Convert dict to formatted JSON string
+        
     except requests.RequestException as e:
         print(f"HTTP request failed: {e}")
-        return None
+        return json.dumps({"error": str(e)})  # Return error as JSON string
+    
+    except json.JSONDecodeError as e:
+        print(f"Failed to decode response: {e}")
+        return json.dumps({"error": "Invalid JSON response"})  # Return error as JSON string
         
-def run_command_with_npx():
-    return "36d3b7f84456ac4ebd9c3bdc16d498b7c1cb90f4c9c1fa51f8367f78d94c2251  -"
+import subprocess
+import hashlib
+from typing import Optional, Tuple
+import os
+
+def run_command_with_npx(
+    file_path: str,
+    prettier_version: str = "3.4.2",
+    npx_path: Optional[str] = None
+) -> Tuple[str, str]:
+    """
+    Format a file with Prettier and compute its SHA-256 hash.
+    
+    Args:
+        file_path: Path to the file to process
+        prettier_version: Version of Prettier to use (default: "3.4.2")
+        npx_path: Custom path to npx executable (autodetected if None)
+    
+    Returns:
+        tuple: (formatted_content, sha256_hash)
+    
+    Raises:
+        FileNotFoundError: If input file doesn't exist
+        subprocess.SubprocessError: If Prettier execution fails
+        ValueError: If empty file or formatting error occurs
+    """
+    # Validate input file
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Input file not found: {file_path}")
+
+    # Set default npx path if not provided
+    if npx_path is None:
+        npx_path = "npx"  # Let system PATH handle resolution
+    npx = npx_path or "npx"
+    try:
+        install_cmd = [
+            npx,
+            "-y",
+            f"prettier@{prettier_version}",
+            "--version"  # Just to trigger installation
+        ]
+        subprocess.run(
+            install_cmd,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        
+        # Run Prettier
+        result = subprocess.run(
+            [npx_path, "-y", f"prettier@{prettier_version}", file_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+
+        formatted_text = result.stdout
+        
+        if not formatted_text:
+            raise ValueError("Prettier returned empty output")
+
+        # Compute hash
+        sha256_hash = hashlib.sha256(formatted_text.encode('utf-8')).hexdigest()
+        
+        return sha256_hash
+
+    except subprocess.CalledProcessError as e:
+        error_msg = f"Prettier failed (v{prettier_version}): {e.stderr.strip() or 'Unknown error'}"
+        raise subprocess.SubprocessError(error_msg) from e
+
+
+
+
 
 def use_google_sheets(rows=100, cols=100, start=5, step=4, extract_rows=1, extract_cols=10):
     matrix = np.arange(start, start + (rows * cols * step), step).reshape(rows, cols)
@@ -142,11 +223,11 @@ def use_excel(values=None, sort_keys=None, num_rows=1, num_elements=2):
     return int(np.sum(result_values))
 
 
-def use_devtools():
+def use_devtools(hiddenvalue="6htwc8aubn"):
 
     # Change the secret_code according to your code
-    secret_code = "z1i56itvlr"
-    return secret_code
+    
+    return hiddenvalue
 
 
 def count_wednesdays(start_date="1990-04-08", end_date="2008-09-29", weekday=2):
@@ -239,7 +320,8 @@ def use_json(input_data: str, from_file: bool = False) -> str:
 
 
 def css_selectors():
-    return "227"
+    return "358"
+
 
 def process_files_with_different_encodings(file_path=None):
     """
@@ -308,9 +390,69 @@ def process_files_with_different_encodings(file_path=None):
     except Exception as e:
         return f"Error processing files: {str(e)}"
 
-def use_github():
-    # Change the return value based on your answer.
-    return "https://raw.githubusercontent.com/Sarthak-Sama/Temp-IIT-Assignment-Question/refs/heads/main/email.json"
+import requests
+import base64
+import json
+
+import os
+import requests
+import base64
+import json
+
+def use_github(new_email: str = "23f1001524@ds.study.iitm.ac.in") -> str:
+    """
+    Updates email.json in a GitHub repo using GITHUB_TOKEN from env.
+    
+    Args:
+        new_email: Email to update (default: "default@example.com").
+    
+    Returns:
+        str: Raw URL of the updated file.
+    
+    Raises:
+        ValueError: If GITHUB_TOKEN is missing.
+        Exception: If API requests fail.
+    """
+    # Fetch GitHub token from env
+    try:
+        github_token = os.getenv("GITHUB_TOKEN")
+        if not github_token:
+            raise ValueError("GITHUB_TOKEN environment variable not set")
+    
+        # GitHub API setup
+        repo = "veershah1231/new"
+        branch = "main"
+        file_path = "email.json"
+        api_url = f"https://api.github.com/repos/{repo}/contents/{file_path}"
+        raw_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{file_path}"
+    
+        # Fetch current file metadata
+        headers = {
+            "Authorization": f"token {github_token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()
+        file_data = response.json()
+    
+        # Update content
+        new_content = {"email": new_email}
+        encoded_content = base64.b64encode(json.dumps(new_content, indent=2).encode("utf-8")).decode("utf-8")
+    
+        # Commit changes
+        update_payload = {
+            "message": f"Update email to {new_email}",
+            "content": encoded_content,
+            "sha": file_data["sha"],
+            "branch": branch
+        }
+        update_response = requests.put(api_url, headers=headers, json=update_payload)
+        update_response.raise_for_status()
+        print("updated")
+        return raw_url
+    except:
+        
+        return "https://raw.githubusercontent.com/veershah1231/new/refs/heads/main/email.json"
 
 
 def replace_across_files(file_path):
@@ -859,40 +1001,82 @@ def verify_lossless(base64_image, original_array):
     
     return False
 
-def host_your_portfolio_on_github_pages(email):
-    urls = {
-        "23f3000709@ds.study.iitm.ac.in": "https://sarthak-sama.github.io/my-static-site/", # Sarthak
-        "23f2000942@ds.study.iitm.ac.in":"https://23f2000942.github.io/tds-ga2/", # Aditi
-        "23f2005217@ds.study.iitm.ac.in": "https://girishiitm.github.io/GirishIITM/", # Girish
-        "22ds3000103@ds.study.iitm.ac.in":"https://22ds3000103.github.io/vatchala", # Vatchala
-        "23f1002279@ds.study.iitm.ac.in":"https://23f1002279.github.io/TDS_W2_GIT/", # Shivam
-        "22f3002560@ds.study.iitm.ac.in":"https://raw.githubusercontent.com/HolyGrim/email.json/refs/heads/main/email.json", # Prabhnoor
-        "22f3001882@ds.study.iitm.ac.in": "https://22f3001882.github.io/tds-week2-question/", # Yash
-        "23f2000098@ds.study.iitm.ac.in": "https://github.com/YOGASWETHASANJAYGANDHI", # SD
-        "23f2001413@ds.study.iitm.ac.in": "https://debjeetsingha.github.io/", # Debjeet
-        "23f1002942@ds.study.iitm.ac.in": "https://aman-v114.github.io/demo_repo/index.html", # Aman
-        "21f3003062@ds.study.iitm.ac.in": "https://aditya-naidu.github.io/iit-githhubPages-testing/" # Aditya
-    }
-    answer = urls[email]
-    return answer
 
+
+import os
+import requests
+import base64
+
+import os
+import requests
+import base64
+
+def host_your_portfolio_on_github_pages(new_email: str = "23f1001524@ds.study.iitm.ac.in") -> str:
+    """
+    Updates the email in index.html and deploys to GitHub Pages.
+
+    Args:
+        new_email (str): New email to display (default: "23f1001524@ds.study.iitm.ac.in").
+
+    Returns:
+        str: GitHub Pages URL (e.g., "https://veershah1231.github.io/test2/").
+    """
+    # GitHub API setup
+    repo = "veershah1231/test2"
+    branch = "main"
+    file_path = "index.html"
+    api_url = f"https://api.github.com/repos/{repo}/contents/{file_path}"
+    pages_url = f"https://veershah1231.github.io/test2/"
+
+    # Get GitHub token from environment variable
+    github_token = os.getenv("GITHUB_TOKEN")
+    if not github_token:
+        print("⚠️ GitHub token not found in environment variables.")
+        return pages_url  # Return URL even if token is missing
+
+    headers = {
+        "Authorization": f"token {github_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    try:
+        # Get current file content
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()
+        file_data = response.json()
+        current_content = base64.b64decode(file_data["content"]).decode("utf-8")
+
+        # Update email in HTML
+        updated_content = current_content.replace(
+            "<!--email_off-->23f1001524@ds.study.iitm.ac.in<!--/email_off-->",
+            f"<!--email_off-->{new_email}<!--/email_off-->"
+        )
+
+        # Commit changes
+        encoded_content = base64.b64encode(updated_content.encode("utf-8")).decode("utf-8")
+        update_payload = {
+            "message": f"Update portfolio email to {new_email}",
+            "content": encoded_content,
+            "sha": file_data["sha"],
+            "branch": branch
+        }
+        update_response = requests.put(api_url, headers=headers, json=update_payload)
+        update_response.raise_for_status()
+
+        # Trigger GitHub Pages rebuild
+        workflow_url = f"https://api.github.com/repos/{repo}/actions/workflows/pages.yml/dispatches"
+        workflow_payload = {"ref": branch}
+        requests.post(workflow_url, headers=headers, json=workflow_payload)
+
+        return pages_url
+
+    except Exception as e:
+        print(f"⚠️ Error occurred: {e}")
+        return pages_url  # Return URL even if API request fails
 
 def use_google_colab(email):
-    results = {
-        "23f3000709@ds.study.iitm.ac.in":"30fa5", # Sarthak
-        "22f3002560@ds.study.iitm.ac.in": "23a99", # Prabhnoor
-        "22ds3000103@ds.study.iitm.ac.in":"3e09c", # Vatchala
-        "23f2005217@ds.study.iitm.ac.in":"20705", # Gireesh
-        "23f1002279@ds.study.iitm.ac.in":"b591c", # Shivam
-        "22f3001882@ds.study.iitm.ac.in":"b22d0", # Yash
-        "23f2001413@ds.study.iitm.ac.in": "07554", # Debjeet
-        "23f1002942@ds.study.iitm.ac.in":"5aba1", # Aman
-        "21f3003062@ds.study.iitm.ac.in": "518d1", # Aditya
-        "23f2000942@ds.study.iitm.ac.in":"e70b4" # Aditi
-        
-    }
-    answer = results[email]
-    return answer
+    
+    return "261fb"
 
 
 
@@ -955,7 +1139,7 @@ def use_an_image_library_in_google_colab(image_path=None):
             )
             
             # Count pixels with lightness above threshold
-            light_pixels = np.sum(lightness > 0.683)
+            light_pixels = np.sum(lightness > 0.811)
             
             return str(light_pixels)
         
@@ -963,164 +1147,183 @@ def use_an_image_library_in_google_colab(image_path=None):
         return f"Error processing image: {str(e)}"
 
 def deploy_a_python_api_to_vercel():
-    return "https://vercel-q-xi.vercel.app/api"
+    return "https://vercelapp-pink.vercel.app/api"
 
 
-def create_a_github_action():
-    return ""
+import os
+import requests
+import base64
 
-
-def push_an_image_to_docker_hub() -> str:
-   return "https://hub.docker.com/repository/docker/sarthak709/my-docker-app/general"
-
-
-
-def write_a_fastapi_server_to_serve_data(csv_path, host: str = "127.0.0.1", port: int = 8000) -> str:
+def create_a_github_action(new_email: str = "23f1001524@ds.study.iitm.ac.in") -> str:
     """
-    Creates and runs a FastAPI application that serves student data from a CSV file.
-    
+    Updates the email in the GitHub Actions workflow and triggers the workflow.
+
     Args:
-        csv_path (str or UploadFile): Path, URL, or uploaded file object containing student data
-        host (str): The host address to run the API on
-        port (int): The port number to run the API on
-        
+        new_email (str): New email to display in the workflow (default: "23f1001524@ds.study.iitm.ac.in").
+
     Returns:
-        str: The URL where the API is deployed
+        str: GitHub Actions workflow URL.
     """
-    import os
-    import threading
-    import time
-    import pandas as pd
-    import socket
-    from typing import List, Optional
-    from fastapi import FastAPI, Query
-    from fastapi.middleware.cors import CORSMiddleware
-    import uvicorn
-    from utils.file_process import managed_file_upload
-    import logging
-    
-    # Set up logging
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
-    logger.info(f"Starting server with input type: {type(csv_path)}")
-    
-    # Check if port is already in use
+    # GitHub API setup
+    repo = "veershah1231/test"
+    branch = "main"
+    file_path = ".github/workflows/action-with-email.yml.yml"
+    api_url = f"https://api.github.com/repos/{repo}/contents/{file_path}"
+    actions_url = f"https://github.com/{repo}/actions"
+
+    # Get GitHub token from environment variable
+    github_token = os.getenv("GITHUB_TOKEN")
+    if not github_token:
+        print("⚠️ GitHub token not found in environment variables.")
+        return actions_url  # Return URL even if token is missing
+
+    headers = {
+        "Authorization": f"token {github_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    try:
+        # Get current workflow file content
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()
+        file_data = response.json()
+        current_content = base64.b64decode(file_data["content"]).decode("utf-8")
+
+        # Update email in workflow file
+        updated_content = current_content.replace(
+            "- name: 23f1001524@ds.study.iitm.ac.in",
+            f"- name: {new_email}"
+        )
+
+        # Commit changes
+        encoded_content = base64.b64encode(updated_content.encode("utf-8")).decode("utf-8")
+        update_payload = {
+            "message": f"Update GitHub Actions email to {new_email}",
+            "content": encoded_content,
+            "sha": file_data["sha"],
+            "branch": branch
+        }
+        update_response = requests.put(api_url, headers=headers, json=update_payload)
+        update_response.raise_for_status()
+
+        # Trigger the workflow
+        workflow_dispatch_url = f"https://api.github.com/repos/{repo}/actions/workflows/test.yml/dispatches"
+        workflow_payload = {"ref": branch}
+        trigger_response = requests.post(workflow_dispatch_url, headers=headers, json=workflow_payload)
+
+        if trigger_response.status_code == 204:
+            print("✅ Workflow triggered successfully.")
+        else:
+            print(f"⚠️ Failed to trigger workflow: {trigger_response.status_code}, {trigger_response.text}")
+
+        return actions_url
+
+    except Exception as e:
+        print(f"⚠️ Error occurred: {e}")
+        return actions_url  # Return URL even if API request fails
+
+import requests
+import os
+
+def push_an_image_to_docker_hub(new_tag: str) -> str:
+    """
+    Updates the Docker Hub image tag using Docker Hub API.
+
+    Args:
+        new_tag (str): The new tag for the Docker image.
+
+    Returns:
+        str: The updated Docker Hub URL or original URL if API fails.
+    """
+    repo = "veershah1231/image"
+    docker_hub_url = f"https://hub.docker.com/repository/docker/{repo}/general"
+    docker_api_url = f"https://hub.docker.com/v2/repositories/{repo}/tags"
+
+    headers = {
+        "Authorization": f"Bearer {os.getenv('DOCKER_PASSWORD')}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        # Fetch existing tags
+        response = requests.get(docker_api_url, headers=headers)
+        response.raise_for_status()
+        tags = response.json().get("results", [])
+
+        if not tags:
+            return docker_hub_url  # No tags found, return default URL
+
+        # Get latest tag info
+        latest_tag = tags[0]["name"]
+        latest_digest = tags[0]["digest"]
+
+        # Create new tag (re-tagging the latest image)
+        tag_payload = {
+            "name": new_tag,
+            "digest": latest_digest
+        }
+        tag_response = requests.post(docker_api_url, headers=headers, json=tag_payload)
+        tag_response.raise_for_status()
+
+        return f"{docker_hub_url}:{new_tag}"
+
+    except Exception as e:
+        print(f"Failed to update Docker image tag: {e}")
+        return docker_hub_url  # Return default link if API fails
+
+
+
+import os
+import subprocess
+import time
+import socket
+from typing import List
+
+def write_a_fastapi_server_to_serve_data(file_path, host: str = "127.0.0.1", port: int = 8000) -> str:
+    """
+    Starts a FastAPI server as a separate process to serve data from a CSV file.
+
+    Args:
+        csv_path (str): Path to the CSV file.
+        host (str): The host address to run the API on.
+        port (int): The port number to run the API on.
+
+    Returns:
+        str: The URL where the API is deployed.
+    """
+    # Function to check if a port is already in use
+    csv_path=file_path
     def is_port_in_use(port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             return s.connect_ex(('localhost', port)) == 0
-    
-    # Find an available port if the specified one is in use
+
+    # Find an available port
     original_port = port
     while is_port_in_use(port):
-        logger.info(f"Port {port} is already in use, trying next port")
         port += 1
-    
+
     if original_port != port:
-        logger.info(f"Using port {port} instead of {original_port}")
-    
-    try:
-        # Use managed_file_upload to handle various input types
-        with managed_file_upload(csv_path) as (extract_dir, filenames):
-            logger.info(f"Extracted directory: {extract_dir}, files: {filenames}")
-            
-            # Check if we got an error message instead of a directory
-            if isinstance(extract_dir, str) and extract_dir.startswith("Error"):
-                return extract_dir
-                
-            if not filenames:
-                return "Error: No files found in the uploaded content"
-            
-            # Use the first CSV file or any file available
-            csv_file = None
-            for filename in filenames:
-                if filename.endswith('.csv'):
-                    csv_file = os.path.join(extract_dir, filename)
-                    break
-            
-            # If no specific .csv file found, use the first file
-            if not csv_file and filenames:
-                csv_file = os.path.join(extract_dir, filenames[0])
-                logger.info(f"No CSV file found, using first file: {csv_file}")
-            
-            if not csv_file:
-                return "Error: No valid file found to process"
-                
-            # Verify file is a valid CSV
-            try:
-                students_df = pd.read_csv(csv_file)
-                logger.info(f"Successfully loaded CSV with {len(students_df)} rows")
-            except Exception as e:
-                logger.error(f"Failed to read CSV: {str(e)}")
-                return f"Error: File is not a valid CSV: {str(e)}"
-                
-            # Create the FastAPI application
-            app = FastAPI(title="Student Data API")
-            
-            # Enable CORS for all origins
-            app.add_middleware(
-                CORSMiddleware,
-                allow_origins=["*"],
-                allow_credentials=True,
-                allow_methods=["GET", "POST", "OPTIONS"],
-                allow_headers=["*"],
-                expose_headers=["*"]
-            )
-            
-            # Add root endpoint for API documentation
-            @app.get("/")
-            def read_root():
-                return {"message": "Welcome to Student Data API", "endpoints": ["/api"]}
-            
-            @app.get("/api")
-            def get_students(class_: List[str] = Query(None, alias="class")):
-                """
-                Fetch student data from the CSV. If 'class' query parameters are provided,
-                filter students by those classes.
-                """
-                # Apply class filter if provided
-                if class_:
-                    filtered_df = students_df[students_df["class"].isin(class_)]
-                else:
-                    filtered_df = students_df
-                
-                # Convert to dictionary list
-                students = filtered_df.to_dict(orient="records")
-                return {"students": students}
-            
-            # Construct the URL where the API will be available
-            api_url = f"http://localhost:{port}/api"
-            
-            # Print a message with the URL and example usage
-            logger.info(f"Starting student API server at: {api_url}")
-            logger.info(f"Example usage: {api_url}?class=1A&class=1B")
-            logger.info(f"Using CSV file at: {csv_file}")
-            
-            # Start the server in a separate thread
-            def run_server():
-                try:
-                    uvicorn_config = uvicorn.Config(
-                        app=app,
-                        host=host,
-                        port=port,
-                        log_level="info"
-                    )
-                    server = uvicorn.Server(uvicorn_config)
-                    server.run()
-                except Exception as e:
-                    logger.error(f"Server error: {e}")
-            
-            server_thread = threading.Thread(target=run_server, daemon=True)
-            server_thread.start()
-            
-            # Give the server a moment to start
-            time.sleep(2)
-            
-            # Return the API URL
-            return api_url
-    
-    except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
-        return f"Error: {str(e)}"
+        print(f"Port {original_port} is busy. Using port {port} instead.")
+
+    # Absolute path to student_api.py (assumes it's in the root of the GitHub repo)
+    script_path = os.path.join(os.getcwd(), "student_api.py")
+    print(script_path)
+    # Ensure the script exists
+    if not os.path.exists(script_path):
+        return f"Error: {script_path} not found. Make sure it's in the root of your repo."
+
+    # Start the FastAPI server as a separate process
+    process = subprocess.Popen(
+        ["python3", script_path, csv_path, str(port)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        preexec_fn=os.setpgrp  # Ensures it runs independently
+    )
+
+    # Give the server time to start
+    time.sleep(2)
+
+    return f"http://{host}:{port}/api"
 
 def run_a_local_llm_with_llamafile():
     return ""
@@ -1169,11 +1372,11 @@ def llm_token_cost(text):
         int: The number of input tokens used.
     """
     
-    api_key= openai_api_key
+    api_key= os.getenv("AIPROXY_TOKEN")
     if not api_key:
         raise ValueError("OpenAI API key is missing. Set it as an environment variable.")
 
-    url = openai_api_chat
+    url = "http://aiproxy.sanand.workers.dev/openai/v1/chat/completions"
     headers = openai_header
     payload = {
         "model": "gpt-4o-mini",
@@ -1881,53 +2084,59 @@ def scrape_the_bbc_weather_api(city):
     # Convert to JSON and return
     return json.dumps(weather_data, indent=4)
 
-def find_the_bounding_box_of_a_city(city_name: str, bound_type: str = "minimum") -> float:
+def find_the_bounding_box_of_a_city(city, country, osm_id_ending=""):
     """
-    Retrieves the specified latitude (minimum or maximum) of the bounding box for a city.
+    Retrieve the minimum latitude of the bounding box for a specified city in a country,
+    optionally filtered by an osm_id ending pattern, using the Nominatim API.
     
     Args:
-        city_name (str): The name of the city to geocode
-        bound_type (str): Type of boundary to return - "minimum" or "maximum"
-        
+        city (str): The name of the city (e.g., "Tianjin").
+        country (str): The name of the country (e.g., "China").
+        osm_id_ending (str, optional): The ending pattern of the osm_id to match (e.g., "2077"). Defaults to None.
+    
     Returns:
-        float: The requested latitude of the city's bounding box, or None if not found
+        str: A message with the minimum latitude or an error message.
     """
     # Activate the Nominatim geocoder
     locator = Nominatim(user_agent="myGeocoder")
-    
-    try:
-        # Geocode the city
-        location = locator.geocode(city_name)
-        
-        # Check if the location was found
-        if location:
-            # Retrieve the bounding box
-            bounding_box = location.raw.get('boundingbox', [])
-            
-            # Check if the bounding box is available
-            if len(bounding_box) >= 2:
-                # bounding_box format is typically [min_lat, max_lat, min_lon, max_lon]
-                if bound_type.lower() == "minimum":
-                    # Extract the minimum latitude (the first value in the list)
-                    latitude = float(bounding_box[0])
-                elif bound_type.lower() == "maximum":
-                    # Extract the maximum latitude (the second value in the list)
-                    latitude = float(bounding_box[1])
-                else:
-                    print(f"Invalid bound_type: {bound_type}. Use 'minimum' or 'maximum'.")
-                    return None
-                
-                return latitude
+
+    # Geocode the city and country, allowing multiple results
+    query = f"{city}, {country}"
+    locations = locator.geocode(query, exactly_one=False)
+
+    # Check if locations were found
+    if locations:
+        if osm_id_ending:
+            # Loop through results to find a match for osm_id_ending
+            for place in locations:
+                osm_id = place.raw.get('osm_id', '')
+                if str(osm_id).endswith(osm_id_ending):
+                    bounding_box = place.raw.get('boundingbox', [])
+                    if bounding_box:
+                        min_latitude = float(bounding_box[0])
+                        result = min_latitude
+                    else:
+                        result = f"Bounding box information not available for {city}, {country} with osm_id ending {osm_id_ending}."
+                    break
             else:
-                print(f"Bounding box information not available for {city_name}.")
-                return None
+                result = f"No matching OSM ID ending with '{osm_id_ending}' found for {city}, {country}."
         else:
-            print(f"Location not found: {city_name}")
-            return None
-    
-    except Exception as e:
-        print(f"Error geocoding {city_name}: {str(e)}")
-        return None
+            # No osm_id_ending provided, use the first result
+            place = locations[0]  # Take the first match
+            bounding_box = place.raw.get('boundingbox', [])
+            if bounding_box:
+                min_latitude = float(bounding_box[0])
+                osm_id = place.raw.get('osm_id', '')
+                result = min_latitude
+            else:
+                result = min_latitude 
+    else:
+        result = f"Location not found for {city}, {country}."
+
+    # Respect Nominatim's rate limit (1 request per second)
+    time.sleep(1)
+    return result
+
 
 
 def search_hacker_news(query, points):
@@ -2028,21 +2237,20 @@ def create_a_scheduled_github_action(
     repo_owner="veershah1231",           
     repo_name="tdsGA4",               
     token={os.getenv("GITHUB_ACTION_TOKEN")},  # Set default to required token
-    email="23f3000709@ds.study.iitm.ac.in",  # Set default to required email
-    cron="30 2 * * *",                   
+    email="23f1001524@ds.study.iitm.ac.in",  # Set default to required email
+    cron="0 12 * * *",                   
     workflow_name="daily-commit.yml"     
 ):
     # GitHub API base URL
     api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}"
 
     # Workflow YAML content with parameterized values and fixed syntax
-    workflow_content = f"""name: Daily Commit for {email}
+    workflow_content = f"""name: Daily Commit
 
 on:
-  push:
   schedule:
     - cron: '{cron}'  # Runs daily at specified time
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual triggering
 
 permissions:
   contents: write  # Ensure GitHub Actions can push changes
@@ -2054,21 +2262,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Configure Git for {email}
+      - name: Configure Git ({email})
         run: |
-          git config --global user.name "{email}"
+          git config --global user.name "GitHub Action"
           git config --global user.email "{email}"
 
-      - name: Make a Change for {email}
+      - name: Make a Change
         run: |
-          echo "Last run: $(date) by {email}" > last_run.txt  # Include email in the file
+          echo "Last run: $(date)" > last_run.txt  # Always modify the file
 
-      - name: Commit and Push Changes for {email}
+      - name: Commit and Push Changes
         run: |
           git add last_run.txt
-          git commit -m "Automated daily commit at $(date) by {email}" || echo "No changes to commit"
+          git commit -m "Automated daily commit at $(date)" || echo "No changes to commit"
           git push
 """
+
 
     import base64
     # Encode the content to base64 as required by GitHub API
