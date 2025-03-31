@@ -102,8 +102,86 @@ def make_http_requests_with_uv(url="https://httpbin.org/get", query_params=None)
         print(f"Failed to decode response: {e}")
         return json.dumps({"error": "Invalid JSON response"})  # Return error as JSON string
         
-def run_command_with_npx():
-    return "36d3b7f84456ac4ebd9c3bdc16d498b7c1cb90f4c9c1fa51f8367f78d94c2251  -"
+import subprocess
+import hashlib
+from typing import Optional, Tuple
+import os
+
+def run_command_with_npx(
+    file_path: str,
+    prettier_version: str = "3.4.2",
+    npx_path: Optional[str] = None
+) -> Tuple[str, str]:
+    """
+    Format a file with Prettier and compute its SHA-256 hash.
+    
+    Args:
+        file_path: Path to the file to process
+        prettier_version: Version of Prettier to use (default: "3.4.2")
+        npx_path: Custom path to npx executable (autodetected if None)
+    
+    Returns:
+        tuple: (formatted_content, sha256_hash)
+    
+    Raises:
+        FileNotFoundError: If input file doesn't exist
+        subprocess.SubprocessError: If Prettier execution fails
+        ValueError: If empty file or formatting error occurs
+    """
+    # Validate input file
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Input file not found: {file_path}")
+
+    # Set default npx path if not provided
+    if npx_path is None:
+        npx_path = "npx"  # Let system PATH handle resolution
+
+    try:
+        # Run Prettier
+        result = subprocess.run(
+            [npx_path, "-y", f"prettier@{prettier_version}", file_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+
+        formatted_text = result.stdout.strip()
+        
+        if not formatted_text:
+            raise ValueError("Prettier returned empty output")
+
+        # Compute hash
+        sha256_hash = hashlib.sha256(formatted_text.encode('utf-8')).hexdigest()
+        
+        return formatted_text, sha256_hash
+
+    except subprocess.CalledProcessError as e:
+        error_msg = f"Prettier failed (v{prettier_version}): {e.stderr.strip() or 'Unknown error'}"
+        raise subprocess.SubprocessError(error_msg) from e
+
+
+def generate_sha256sum_output(file_path: str, **kwargs) -> str:
+    """
+    Generate sha256sum-like output for a formatted file.
+    
+    Args:
+        file_path: Path to input file
+        **kwargs: Passed to format_and_hash_file()
+    
+    Returns:
+        str: "hash  -" format string
+    
+    Example:
+        >>> generate_sha256sum_output("README.md")
+        "a1b2c3...  -"
+    """
+    try:
+        _, sha256_hash = format_and_hash_file(file_path, **kwargs)
+        return f"{sha256_hash}"
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
 
 def use_google_sheets(rows=100, cols=100, start=5, step=4, extract_rows=1, extract_cols=10):
     matrix = np.arange(start, start + (rows * cols * step), step).reshape(rows, cols)
