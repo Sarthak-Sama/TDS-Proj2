@@ -448,7 +448,7 @@ def use_github(new_email: str = "23f1001524@ds.study.iitm.ac.in") -> str:
         }
         update_response = requests.put(api_url, headers=headers, json=update_payload)
         update_response.raise_for_status()
-    
+        print("updated")
         return raw_url
     except:
         
