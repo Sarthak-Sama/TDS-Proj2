@@ -1279,7 +1279,7 @@ import time
 import socket
 from typing import List
 
-def write_a_fastapi_server_to_serve_data(csv_path, host: str = "127.0.0.1", port: int = 8000) -> str:
+def write_a_fastapi_server_to_serve_data(file_path, host: str = "127.0.0.1", port: int = 8000) -> str:
     """
     Starts a FastAPI server as a separate process to serve data from a CSV file.
 
