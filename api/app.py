@@ -162,7 +162,7 @@ async def process_file(
         raise HTTPException(status_code=500, detail=error_msg)
     finally:
         # Clean up temporary files
-        
+        file_path = None 
         if file_path and os.path.exists(file_path):
             try:
                 os.remove(file_path)
