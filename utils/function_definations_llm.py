@@ -721,6 +721,10 @@ function_definitions_objects_llm = {
                 "description": "Type of boundary to return - 'minimum' or 'maximum'",
                 "enum": ["minimum", "maximum"]
             }
+            "osm_id_ending":{
+                "type": "string",
+                "description": "The ending pattern of the osm_id to match (e.g., "2077")"
+            }
         },
         "required": ["city_name", "bound_type"]
     }
