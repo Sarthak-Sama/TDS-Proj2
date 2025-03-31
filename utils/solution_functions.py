@@ -135,7 +135,7 @@ def run_command_with_npx(
     # Set default npx path if not provided
     if npx_path is None:
         npx_path = "npx"  # Let system PATH handle resolution
-
+    npx = npx_path or "npx"
     try:
         install_cmd = [
             npx,
