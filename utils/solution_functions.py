@@ -389,10 +389,6 @@ def process_files_with_different_encodings(file_path=None):
     except Exception as e:
         return f"Error processing files: {str(e)}"
 
-def use_github():
-    # Change the return value based on your answer.
-    return "https://raw.githubusercontent.com/Sarthak-Sama/Temp-IIT-Assignment-Question/refs/heads/main/email.json"
-
 import requests
 import base64
 import json
