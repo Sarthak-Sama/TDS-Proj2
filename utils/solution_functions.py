@@ -223,11 +223,11 @@ def use_excel(values=None, sort_keys=None, num_rows=1, num_elements=2):
     return int(np.sum(result_values))
 
 
-def use_devtools():
+def use_devtools(hiddenvalue="6htwc8aubn"):
 
     # Change the secret_code according to your code
-    secret_code = "z1i56itvlr"
-    return secret_code
+    
+    return hiddenvalue
 
 
 def count_wednesdays(start_date="1990-04-08", end_date="2008-09-29", weekday=2):
