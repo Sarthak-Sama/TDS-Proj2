@@ -1273,153 +1273,56 @@ def push_an_image_to_docker_hub(new_tag: str) -> str:
 
 
 
+import os
+import subprocess
+import time
+import socket
+from typing import List
 
 def write_a_fastapi_server_to_serve_data(csv_path, host: str = "127.0.0.1", port: int = 8000) -> str:
     """
-    Creates and runs a FastAPI application that serves student data from a CSV file.
-    
+    Starts a FastAPI server as a separate process to serve data from a CSV file.
+
     Args:
-        csv_path (str or UploadFile): Path, URL, or uploaded file object containing student data
-        host (str): The host address to run the API on
-        port (int): The port number to run the API on
-        
+        csv_path (str): Path to the CSV file.
+        host (str): The host address to run the API on.
+        port (int): The port number to run the API on.
+
     Returns:
-        str: The URL where the API is deployed
+        str: The URL where the API is deployed.
     """
-    import os
-    import threading
-    import time
-    import pandas as pd
-    import socket
-    from typing import List, Optional
-    from fastapi import FastAPI, Query
-    from fastapi.middleware.cors import CORSMiddleware
-    import uvicorn
-    from utils.file_process import managed_file_upload
-    import logging
-    
-    # Set up logging
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
-    logger.info(f"Starting server with input type: {type(csv_path)}")
-    
-    # Check if port is already in use
+    # Function to check if a port is already in use
     def is_port_in_use(port):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             return s.connect_ex(('localhost', port)) == 0
-    
-    # Find an available port if the specified one is in use
+
+    # Find an available port
     original_port = port
     while is_port_in_use(port):
-        logger.info(f"Port {port} is already in use, trying next port")
         port += 1
-    
+
     if original_port != port:
-        logger.info(f"Using port {port} instead of {original_port}")
-    
-    try:
-        # Use managed_file_upload to handle various input types
-        with managed_file_upload(csv_path) as (extract_dir, filenames):
-            logger.info(f"Extracted directory: {extract_dir}, files: {filenames}")
-            
-            # Check if we got an error message instead of a directory
-            if isinstance(extract_dir, str) and extract_dir.startswith("Error"):
-                return extract_dir
-                
-            if not filenames:
-                return "Error: No files found in the uploaded content"
-            
-            # Use the first CSV file or any file available
-            csv_file = None
-            for filename in filenames:
-                if filename.endswith('.csv'):
-                    csv_file = os.path.join(extract_dir, filename)
-                    break
-            
-            # If no specific .csv file found, use the first file
-            if not csv_file and filenames:
-                csv_file = os.path.join(extract_dir, filenames[0])
-                logger.info(f"No CSV file found, using first file: {csv_file}")
-            
-            if not csv_file:
-                return "Error: No valid file found to process"
-                
-            # Verify file is a valid CSV
-            try:
-                students_df = pd.read_csv(csv_file)
-                logger.info(f"Successfully loaded CSV with {len(students_df)} rows")
-            except Exception as e:
-                logger.error(f"Failed to read CSV: {str(e)}")
-                return f"Error: File is not a valid CSV: {str(e)}"
-                
-            # Create the FastAPI application
-            app = FastAPI(title="Student Data API")
-            
-            # Enable CORS for all origins
-            app.add_middleware(
-                CORSMiddleware,
-                allow_origins=["*"],
-                allow_credentials=True,
-                allow_methods=["GET", "POST", "OPTIONS"],
-                allow_headers=["*"],
-                expose_headers=["*"]
-            )
-            
-            # Add root endpoint for API documentation
-            @app.get("/")
-            def read_root():
-                return {"message": "Welcome to Student Data API", "endpoints": ["/api"]}
-            
-            @app.get("/api")
-            def get_students(class_: List[str] = Query(None, alias="class")):
-                """
-                Fetch student data from the CSV. If 'class' query parameters are provided,
-                filter students by those classes.
-                """
-                # Apply class filter if provided
-                if class_:
-                    filtered_df = students_df[students_df["class"].isin(class_)]
-                else:
-                    filtered_df = students_df
-                
-                # Convert to dictionary list
-                students = filtered_df.to_dict(orient="records")
-                return {"students": students}
-            
-            # Construct the URL where the API will be available
-            api_url = f"http://localhost:{port}/api"
-            
-            # Print a message with the URL and example usage
-            logger.info(f"Starting student API server at: {api_url}")
-            logger.info(f"Example usage: {api_url}?class=1A&class=1B")
-            logger.info(f"Using CSV file at: {csv_file}")
-            
-            # Start the server in a separate thread
-            def run_server():
-                try:
-                    uvicorn_config = uvicorn.Config(
-                        app=app,
-                        host=host,
-                        port=port,
-                        log_level="info"
-                    )
-                    server = uvicorn.Server(uvicorn_config)
-                    server.run()
-                except Exception as e:
-                    logger.error(f"Server error: {e}")
-            
-            server_thread = threading.Thread(target=run_server, daemon=True)
-            server_thread.start()
-            
-            # Give the server a moment to start
-            time.sleep(2)
-            
-            # Return the API URL
-            return api_url
-    
-    except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
-        return f"Error: {str(e)}"
+        print(f"Port {original_port} is busy. Using port {port} instead.")
+
+    # Absolute path to student_api.py (assumes it's in the root of the GitHub repo)
+    script_path = os.path.join(os.getcwd(), "student_api.py")
+    print(script_path)
+    # Ensure the script exists
+    if not os.path.exists(script_path):
+        return f"Error: {script_path} not found. Make sure it's in the root of your repo."
+
+    # Start the FastAPI server as a separate process
+    process = subprocess.Popen(
+        ["python3", script_path, csv_path, str(port)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        preexec_fn=os.setpgrp  # Ensures it runs independently
+    )
+
+    # Give the server time to start
+    time.sleep(2)
+
+    return f"http://{host}:{port}/api"
 
 def run_a_local_llm_with_llamafile():
     return ""
