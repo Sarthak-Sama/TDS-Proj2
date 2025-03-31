@@ -118,7 +118,7 @@ function_definitions_objects_llm = {
             "type": "object",
             "properties": {
                 "hiddenvalue":{
-                    "type":"object",
+                    "type":"string",
                     "description":"The value in the hidden element"
                 }
                 
@@ -234,10 +234,13 @@ function_definitions_objects_llm = {
 
     "use_github": {
         "name": "use_github",
-        "description": "description",
+        "description": "deos something in github for which the email or the parameter in given in the question is required",
         "parameters": {
             "type": "object",
-            "properties": {},
+            "properties": {
+                "email":"string",
+                "description":"the parameter or the email that is given in the question"
+            },
             "required": []
         }
     },
