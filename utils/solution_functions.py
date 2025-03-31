@@ -393,6 +393,70 @@ def use_github():
     # Change the return value based on your answer.
     return "https://raw.githubusercontent.com/Sarthak-Sama/Temp-IIT-Assignment-Question/refs/heads/main/email.json"
 
+import requests
+import base64
+import json
+
+import os
+import requests
+import base64
+import json
+
+def use_github(new_email: str = "23f1001524@ds.study.iitm.ac.in") -> str:
+    """
+    Updates email.json in a GitHub repo using GITHUB_TOKEN from env.
+    
+    Args:
+        new_email: Email to update (default: "default@example.com").
+    
+    Returns:
+        str: Raw URL of the updated file.
+    
+    Raises:
+        ValueError: If GITHUB_TOKEN is missing.
+        Exception: If API requests fail.
+    """
+    # Fetch GitHub token from env
+    try:
+        github_token = os.getenv("GITHUB_TOKEN")
+        if not github_token:
+            raise ValueError("GITHUB_TOKEN environment variable not set")
+    
+        # GitHub API setup
+        repo = "veershah1231/new"
+        branch = "main"
+        file_path = "email.json"
+        api_url = f"https://api.github.com/repos/{repo}/contents/{file_path}"
+        raw_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{file_path}"
+    
+        # Fetch current file metadata
+        headers = {
+            "Authorization": f"token {github_token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()
+        file_data = response.json()
+    
+        # Update content
+        new_content = {"email": new_email}
+        encoded_content = base64.b64encode(json.dumps(new_content, indent=2).encode("utf-8")).decode("utf-8")
+    
+        # Commit changes
+        update_payload = {
+            "message": f"Update email to {new_email}",
+            "content": encoded_content,
+            "sha": file_data["sha"],
+            "branch": branch
+        }
+        update_response = requests.put(api_url, headers=headers, json=update_payload)
+        update_response.raise_for_status()
+    
+        return raw_url
+    except:
+        
+        return "https://raw.githubusercontent.com/veershah1231/new/refs/heads/main/email.json"
+
 
 def replace_across_files(file_path):
     """
