@@ -234,12 +234,14 @@ function_definitions_objects_llm = {
 
     "use_github": {
         "name": "use_github",
-        "description": "deos something in github for which the email or the parameter in given in the question is required",
+        "description": "deos something in github for which the email or the parameter in given in the question is required that needs to be included",
         "parameters": {
             "type": "object",
             "properties": {
-                "email":"string",
+                "new_email":{
+                "type": "string",
                 "description":"the parameter or the email that is given in the question"
+             }
             },
             "required": []
         }
@@ -341,18 +343,18 @@ function_definitions_objects_llm = {
         }
     },
 # Completed
-    "host_your_portfolio_on_github_pages": {
+"host_your_portfolio_on_github_pages": {
         "name": "host_your_portfolio_on_github_pages",
-        "description": "Get the GitHub Pages URL for a specific user's portfolio",
+        "description": "deos something in github for which the email or the parameter in given in the question is required that needs to be included in the pages site portfolio",
         "parameters": {
             "type": "object",
             "properties": {
-                "email": {
-                    "type": "string",
-                    "description": "The user's email address to look up their GitHub Pages URL"
-                }
+                "new_email":{
+                "type": "string",
+                "description":"the parameter or the email that is given in the question"
+             }
             },
-            "required": ["email"]
+            "required": []
         }
     },
 # Completed
@@ -403,7 +405,7 @@ function_definitions_objects_llm = {
             "type": "object",
             "properties": {
             
-                "email": {
+                "new_email": {
                     "type": "string",
                     "description": "The email address to configure in the GitHub workflow. It is not necessarily a email but can be any string or parameter. It will be a parameter after text 'Include a step with your' and end with 'in its name' "
                 },
@@ -421,7 +423,11 @@ function_definitions_objects_llm = {
         "description": "Creates and pushes a Docker image to Docker Hub with the specified tag. Uses environment variables for authentication.",
         "parameters": {
             "type": "object",
-            "properties": {},
+            "properties": {
+                "new_tag":{
+                    "type":"string",
+                    "description":"the tag required for the docker image"
+            },
             "required": []
         }
     },
