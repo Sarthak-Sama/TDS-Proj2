@@ -113,10 +113,16 @@ function_definitions_objects_llm = {
 
     "use_devtools": {
         "name": "use_devtools",
-        "description": "description",
+        "description": "Extracts the value from a hidden input field in HTML content. The hidden input is typically of type 'hidden' and contains a secret value that needs to be retrieved.",
         "parameters": {
             "type": "object",
-            "properties": {},
+            "properties": {
+                "hiddenvalue":{
+                    "type":"object",
+                    "description":"The value in the hidden element"
+                }
+                
+            },
             "required": []
         }
     },
