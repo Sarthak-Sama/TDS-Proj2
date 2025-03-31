@@ -31,6 +31,10 @@ def redeploy(password: str = Query(None)):
 
 async def save_upload_file(upload_file: UploadFile) -> str:
     """Save an uploaded file to disk and return its path"""
+    UPLOAD_DIR = "tmp_uploads"
+    if not os.path.exists(UPLOAD_DIR):
+        os.makedirs(UPLOAD_DIR)
+    
     file_path = os.path.join(tmp_dir, upload_file.filename)
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(upload_file.file, buffer)
@@ -95,6 +99,7 @@ async def process_file(
     file_names = []
     tmp_dir_local = tmp_dir
     file_data = {}
+    
 
     # Handle the file processing if file is present
     matched_function = find_similar_question(question)
@@ -102,6 +107,7 @@ async def process_file(
     print("-----------Matched Function------------\n", function_name)
     
     if file:
+        print("received file")
         file_path = await save_upload_file(file)
         try:
             tmp_dir_local, file_names = process_uploaded_file(file_path)
@@ -156,6 +162,15 @@ async def process_file(
         raise HTTPException(status_code=500, detail=error_msg)
     finally:
         # Clean up temporary files
+        
+        if file_path and os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                print(f"Deleted temporary file: {file_path}")
+            except OSError as e:
+                print(f"Warning: Failed to delete file {file_path}: {e}")
+
+        
         if file_data.get("tmp_dir") and os.path.exists(file_data["tmp_dir"]):
             try:
                 shutil.rmtree(file_data["tmp_dir"])
